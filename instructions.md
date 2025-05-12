@@ -188,3 +188,24 @@ devtools::install_gitlab("username/packagename", auth_token = "your_personal_acc
 3. Set up continuous integration with GitHub Actions using `use_github_action()`
 4. Consider including locale-specific handling for numeric formats since you mentioned working with locales where the thousand separator is "." and decimal separator is ","
 
+## System Dependencies on RStudio Server
+
+ Depending on your RStudio Server setup, you might need system-level dependencies installed. If you're not the server administrator, you might need to request these installations:
+
+```r
+# On Ubuntu/Debian systems:
+sudo apt-get install build-essential libcurl4-openssl-dev libssl-dev libxml2-dev
+
+# On Red Hat/CentOS/Fedora systems:
+sudo yum install openssl-devel libcurl-devel libxml2-devel
+```
+
+Git Integration: RStudio Server has built-in Git integration, making it easy to work with Git repositories just like in desktop RStudio.
+Package Building Tools: All necessary tools for package development (document(), check(), build(), etc.) work identically on RStudio Server.
+User Permissions: Make sure your RStudio Server user has sufficient permissions to write to the relevant directories for package development.
+Resource Limitations: Be aware that your RStudio Server might have configured resource limitations that could affect memory-intensive package operations.
+Shared Environment: If you're using a shared RStudio Server instance, be mindful of package dependencies that might affect other users.
+
+One advantage of developing packages on RStudio Server is that it provides a consistent environment across teams, which can help avoid "works on my machine" problems when creating and distributing packages to colleagues.
+
+
