@@ -200,7 +200,7 @@ sudo apt-get install build-essential libcurl4-openssl-dev libssl-dev libxml2-dev
 sudo yum install openssl-devel libcurl-devel libxml2-devel
 ```
 
-Git Integration: RStudio Server has built-in Git integration, making it easy to work with Git repositories just like in desktop RStudio.
+**Git Integration:** RStudio Server has built-in Git integration, making it easy to work with Git repositories just like in desktop RStudio.
 Package Building Tools: All necessary tools for package development (document(), check(), build(), etc.) work identically on RStudio Server.
 User Permissions: Make sure your RStudio Server user has sufficient permissions to write to the relevant directories for package development.
 Resource Limitations: Be aware that your RStudio Server might have configured resource limitations that could affect memory-intensive package operations.
