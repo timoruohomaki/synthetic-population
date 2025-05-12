@@ -1,4 +1,3 @@
-I'll walk you through the steps to create an R package from your existing R project. Creating a package is a great way to share your work with colleagues while ensuring reproducibility and ease of use.
 
 # Creating an R Package from Your Project
 
@@ -180,4 +179,3 @@ devtools::install_github("yourusername/packagename")
 3. Set up continuous integration with GitHub Actions using `use_github_action()`
 4. Consider including locale-specific handling for numeric formats since you mentioned working with locales where the thousand separator is "." and decimal separator is ","
 
-Would you like me to provide more details on any specific part of this process?
