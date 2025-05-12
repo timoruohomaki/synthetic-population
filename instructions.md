@@ -170,6 +170,15 @@ devtools::install_local("path/to/packagename_0.1.0.tar.gz")
 
 # Or directly from your shared directory/Git repository
 devtools::install_github("yourusername/packagename")
+
+# Install from GitLab
+devtools::install_gitlab("username/packagename")
+
+# Install from locally hosted GitLab
+devtools::install_gitlab("username/packagename", host = "gitlab.your-company.com")
+
+# Install from GitLab with privacy token
+devtools::install_gitlab("username/packagename", auth_token = "your_personal_access_token")
 ```
 
 ## Additional Best Practices
