@@ -48,3 +48,15 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 /data
+
+# macOS Finder metadata
+.DS_Store
+
+# court-case-management / ccms-synth: generated synthetic data is never committed
+# (SQLite database, CSV exports and PostgreSQL bundle; regenerate with run.R)
+court-case-management/**/output/
+court-case-management/**/*.sqlite
+court-case-management/**/*.sqlite-journal
+
+# The repo-wide "docs/" rule above targets pkgdown sites; keep ccms-synth documentation
+!court-case-management/ccms-synth/docs/

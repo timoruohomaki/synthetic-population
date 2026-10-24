@@ -1,0 +1,76 @@
+erDiagram
+  court ||--o{ courtroom : has
+  court ||--o{ judge : employs
+  court ||--o{ counsel : "home court of"
+  court ||--o{ court_case : registers
+  court ||--o{ court_resource_month : "resourced by"
+  judge ||--o{ judge_absence : has
+  judge ||--o{ case_assignment : "assigned in"
+  judge ||--o{ hearing : presides
+  courtroom ||--o{ hearing : hosts
+  case_type ||--o{ court_case : classifies
+  litigant ||--o{ court_case : initiates
+  litigant ||--o{ case_party : "is"
+  counsel ||--o{ case_party : represents
+  court_case ||--|{ case_party : involves
+  court_case ||--|{ case_assignment : "handled by"
+  court_case ||--|{ case_status_history : "moves through"
+  court_case ||--|{ case_event : "docket of"
+  court_case ||--o{ document : contains
+  case_event ||--o| document : records
+  court_case ||--o{ hearing : schedules
+  court_case ||--o{ procedural_deadline : "bound by"
+  court_case ||--o{ motion : "subject of"
+  court_case ||--o{ expert_report : orders
+  court_case ||--o{ custody_period : "defendant held"
+  court_case ||--o{ delay_period : "delayed by"
+  adjournment_reason ||--o{ hearing : explains
+  attribution_code ||--o{ adjournment_reason : "responsible party"
+  attribution_code ||--o{ delay_period : "responsible party"
+  attribution_code ||--o{ procedural_deadline : "responsible party"
+  status_code ||--o{ case_status_history : "state"
+  event_type ||--o{ case_event : "type"
+  disposition_type ||--o{ court_case : "outcome"
+  court_case ||--|| truth_case : "latent truth"
+  hearing ||--o| truth_hearing : "latent truth"
+
+  court_case {
+    int case_id PK
+    text case_number UK
+    int court_id FK
+    text case_type_code FK
+    date filing_date
+    text filing_channel
+    date registration_date
+    date first_appearance_date
+    date disposition_date
+    text disposition_code FK
+    bool is_open_at_cutoff
+  }
+  hearing {
+    int hearing_id PK
+    int case_id FK
+    text hearing_type
+    int judge_id FK
+    int courtroom_id FK
+    date scheduled_on_date
+    date earliest_possible_date
+    date hearing_date
+    text outcome
+    text adjournment_reason_code FK
+  }
+  delay_period {
+    int delay_period_id PK
+    int case_id FK
+    date start_date
+    date end_date
+    text attribution_code FK
+    text cause_code
+  }
+  case_status_history {
+    int status_history_id PK
+    int case_id FK
+    text status_code FK
+    date valid_from
+    date valid_to
+  }

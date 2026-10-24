@@ -1,0 +1,95 @@
+### analysis/01_adjournment_model.R
+Decided hearings: 10134, adjournment rate: 0,166
+
+== Oracle model (latent covariates) ==
+                  term  truth estimate std_error z_vs_truth
+ 1:        (Intercept) -1,900   -1,850     0,061       0,82
+ 2:     log_complexity  0,500    0,532     0,059       0,54
+ 3:  needs_interpreter  0,800    0,735     0,080      -0,81
+ 4:   self_represented  0,550    0,555     0,069       0,07
+ 5:       counsel_load  0,250    0,260     0,025       0,39
+ 6:         in_custody -0,600   -0,744     0,236      -0,61
+ 7:      video_enabled -0,450   -0,553     0,058      -1,78
+ 8:   extra_defendants  0,300    0,288     0,049      -0,25
+ 9: prior_adjournments  0,350    0,345     0,037      -0,13
+10:       prep_hearing -0,300   -0,277     0,064       0,37
+
+== Observable model (proxies: initiating-document pages, counsel hearings +-3 d) ==
+                  term estimate std_error p_value
+ 1:        (Intercept)   -2,001     0,081   0,000
+ 2:          log_pages    0,202     0,036   0,000
+ 3:  needs_interpreter    0,726     0,080   0,000
+ 4:   self_represented    0,457     0,068   0,000
+ 5:        counsel_obs    0,138     0,016   0,000
+ 6:         in_custody   -0,757     0,235   0,001
+ 7:      video_enabled   -0,570     0,057   0,000
+ 8:   extra_defendants    0,230     0,051   0,000
+ 9: prior_adjournments    0,382     0,037   0,000
+10:       prep_hearing   -0,153     0,062   0,014
+
+Correlation latent vs observed counsel load: 0,863
+
+== Adjournments by attribution (share of adjourned hearings) ==
+   attribution_code   N share
+1:       RESPONDENT 550 0,327
+2:          DEFENCE 419 0,249
+3:      PROSECUTION 224 0,133
+4:            COURT 174 0,103
+5:         CLAIMANT 140 0,083
+6:      THIRD_PARTY  96 0,057
+7:            JOINT  81 0,048
+
+### analysis/02_durations.R
+== Cox model: time to disposition (HR > 1 = faster) ==
+                    term     HR lower95 upper95
+ 1:               court2  0,858   0,832   0,886
+ 2:               court3  1,037   0,972   1,107
+ 3:   case_typeCIV_SMALL  4,494   4,052   4,983
+ 4:     case_typeCIV_SUM 14,726  13,762  15,758
+ 5:     case_typeCRIM_MH  1,916   1,808   2,030
+ 6:  case_typeCRIM_MINOR  7,480   6,745   8,296
+ 7:     case_typeCRIM_WR 13,720  12,786  14,723
+ 8:         case_typeFAM  1,186   1,107   1,272
+ 9:              efiling  1,177   1,118   1,239
+10:    needs_interpreter  0,872   0,819   0,929
+11: in_custody_at_filing  1,067   0,969   1,174
+12:           bulk_filed  1,069   1,021   1,119
+13:   log(initial_pages)  0,837   0,820   0,853
+Censored (open at cutoff): 4,8 %
+
+== Mean days per phase, disposed CIV_DIS/CRIM_MH/FAM cases ==
+   court_id DECISION HEARING INTAKE PREPARATION SERVICE
+1:        1     23,0    36,9   18,7        85,0    15,6
+2:        2     21,6   100,5    8,7        79,3    15,3
+
+== Deliberation drafting model (oracle nls) ==
+         parameter  truth estimate std_error
+1:  complexity_exp  0,800   0,8108    0,0082
+2:    backlog_coef  0,035   0,0355    0,0016
+3: experience_coef -0,120  -0,1099    0,0048
+
+### analysis/03_court_panel.R
+== Fixed-effects panel (court + year FE), coefficient of e-filing rate (per 1 pp) ==
+                        outcome efiling_coef std_error p_value clerks_coef
+1: Length of proceedings (days)       1,5698    0,4758   0,001      -0,706
+2:               Clearance rate      -0,0106    0,0056   0,061       0,015
+3: Pending cases (end of month)      16,9245    3,2776   0,000     -14,733
+   judges_coef  n    r2
+1:       4,438 90 0,843
+2:       0,068 90 0,538
+3:     -28,245 90 0,967
+Note: in the generator e-filing only shortens registration/service (and adds an
+ electronic-act extension to response deadlines); hearing and drafting queues are unaffected.
+ Non-zero coefficients here are confounding: adoption and backlog both trend upward within
+ courts, which year dummies absorb only partly - the same identification issue as in panel studies.
+
+== Little's Law check: L = lambda x W ==
+   court_id year lambda_per_day mean_pending W_observed W_implied
+1:        1 2024           8,85          920      109,3     103,9
+2:        1 2025           8,93        1.070      118,7     119,9
+3:        2 2024           7,83          933      150,6     119,2
+4:        2 2025           8,03        1.219      140,8     151,8
+5:        3 2024           2,91          172       61,1      59,1
+6:        3 2025           2,74          171       60,4      62,6
+W_observed uses cases filed in the year (open ones censored at cutoff), so it is a lower bound.
+

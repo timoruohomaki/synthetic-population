@@ -1,0 +1,82 @@
+# ccms-synth simulation configuration
+# Every coefficient under `effects` is a TRUE causal parameter of the simulation.
+# They are stored in table truth_parameter so analytical models can be validated.
+run:
+  seed: 20261024
+  start_date: "2023-01-01"     # first filing date (ISO 8601)
+  end_date: "2025-12-31"       # last filing date
+  cutoff_date: "2026-06-30"    # extraction date -> open cases are right-censored
+  calendar_horizon_days: 900   # bookable days beyond the cutoff
+  holiday_set: "FI"            # FI = Finnish public holidays, NONE = weekends only
+
+volume:
+  cases_per_year: 6500
+  annual_growth: 0.05          # non-stationary arrivals (Clarke & Metzler)
+  monthly_seasonality: [1.05, 1.05, 1.10, 1.00, 1.00, 0.95, 0.55, 0.90, 1.10, 1.10, 1.05, 0.85]
+
+courts:
+  - { code: DC-NORTH, name: "District Court North", level: ORDINARY,     share: 0.45, population: 520000, judges: 11, hearing_weekdays: 3, clerks: 16, courtrooms: 5, video_rooms: 3, budget_eur_month: 820000, it_share: 0.05, efiling_start: 0.70, efiling_end: 0.95 }
+  - { code: DC-SOUTH, name: "District Court South", level: ORDINARY,     share: 0.40, population: 470000, judges: 8,  hearing_weekdays: 2, clerks: 11, courtrooms: 4, video_rooms: 1, budget_eur_month: 610000, it_share: 0.03, efiling_start: 0.45, efiling_end: 0.90 }
+  - { code: SC-EAST,  name: "Small Claims Court East", level: SMALL_CLAIMS, share: 0.15, population: 300000, judges: 3,  hearing_weekdays: 2, clerks: 6,  courtrooms: 2, video_rooms: 2, budget_eur_month: 210000, it_share: 0.06, efiling_start: 0.85, efiling_end: 0.98 }
+
+case_types:
+  # weight: share within the court levels listed; complexity: mean of latent lognormal
+  CIV_SUM:    { label: "Civil - summary claim",          category: NON_CRIMINAL, levels: [ORDINARY, SMALL_CLAIMS], weight: 0.36, complexity: 0.6, contest_prob: 0.10, early_prob: 0.04, settle_prob: 0.30, hearing_prob: 0.40, prep_hearing: false, expert_prob: 0.02, interpreter_prob: 0.03, custody_prob: 0.00, self_rep_prob: 0.55, response_days: 14, prep_days: 25, hearing_hours: 1.5, delib_days: 4,  ceiling_days: 365 }
+  CIV_DIS:    { label: "Civil - disputed (broad)",       category: NON_CRIMINAL, levels: [ORDINARY],               weight: 0.14, complexity: 1.6, contest_prob: 1.00, early_prob: 0.05, settle_prob: 0.40, hearing_prob: 0.85, prep_hearing: true,  expert_prob: 0.25, interpreter_prob: 0.05, custody_prob: 0.00, self_rep_prob: 0.10, response_days: 21, prep_days: 60, hearing_hours: 3.0, delib_days: 20, ceiling_days: 540 }
+  CIV_SMALL:  { label: "Civil - small claim disputed",   category: NON_CRIMINAL, levels: [SMALL_CLAIMS],           weight: 0.30, complexity: 0.9, contest_prob: 1.00, early_prob: 0.06, settle_prob: 0.30, hearing_prob: 0.55, prep_hearing: false, expert_prob: 0.04, interpreter_prob: 0.05, custody_prob: 0.00, self_rep_prob: 0.45, response_days: 14, prep_days: 30, hearing_hours: 1.5, delib_days: 8,  ceiling_days: 365 }
+  FAM:        { label: "Family matter",                  category: NON_CRIMINAL, levels: [ORDINARY],               weight: 0.08, complexity: 1.4, contest_prob: 1.00, early_prob: 0.05, settle_prob: 0.35, hearing_prob: 0.70, prep_hearing: true,  expert_prob: 0.55, interpreter_prob: 0.10, custody_prob: 0.00, self_rep_prob: 0.25, response_days: 21, prep_days: 45, hearing_hours: 2.5, delib_days: 14, ceiling_days: 450 }
+  CRIM_WR:    { label: "Criminal - written procedure",   category: CRIMINAL,     levels: [ORDINARY],               weight: 0.15, complexity: 0.5, contest_prob: 0.00, early_prob: 0.10, settle_prob: 0.00, hearing_prob: 0.00, prep_hearing: false, expert_prob: 0.00, interpreter_prob: 0.04, custody_prob: 0.00, self_rep_prob: 0.80, response_days: 14, prep_days: 20, hearing_hours: 0.0, delib_days: 6,  ceiling_days: 548 }
+  CRIM_MH:    { label: "Criminal - main hearing",        category: CRIMINAL,     levels: [ORDINARY],               weight: 0.23, complexity: 1.3, contest_prob: 1.00, early_prob: 0.18, settle_prob: 0.00, hearing_prob: 1.00, prep_hearing: false, expert_prob: 0.08, interpreter_prob: 0.12, custody_prob: 0.12, self_rep_prob: 0.15, response_days: 14, prep_days: 45, hearing_hours: 2.5, delib_days: 7,  ceiling_days: 548 }
+  CRIM_MINOR: { label: "Criminal - minor offence",       category: CRIMINAL,     levels: [SMALL_CLAIMS],           weight: 0.34, complexity: 0.7, contest_prob: 1.00, early_prob: 0.30, settle_prob: 0.00, hearing_prob: 1.00, prep_hearing: false, expert_prob: 0.00, interpreter_prob: 0.06, custody_prob: 0.02, self_rep_prob: 0.50, response_days: 14, prep_days: 25, hearing_hours: 1.0, delib_days: 3,  ceiling_days: 548 }
+
+actors:
+  counsel_per_court: 70        # private counsel / public defenders
+  counsel_activity_shape: 1.6  # Pareto shape: low = a few very busy lawyers
+  bulk_litigants: 3            # mass/robot filers of summary claims (Rocha et al.)
+  bulk_share_of_summary: 0.55
+  bulk_surge_prob_month: 0.08
+  bulk_surge_multiplier: 3.0
+  interpreter_languages: [ar, ru, so, et, en, fa]
+
+capacity:
+  hearing_hours_per_day: 5.5
+  room_hours_per_day: 7.0
+  first_appearance_slots_per_day: 12   # criminal intake docket per court
+  first_appearance_weekdays: [2, 4]    # ISO weekday: Tue, Thu
+  summer_recess_month: 7
+  summer_capacity_factor: 0.15
+  yearend_capacity_factor: 0.30        # 22 Dec - 6 Jan
+  clerk_capacity_per_month: 20         # registrations per clerk FTE
+  clerk_vacancy_sd: 0.06               # monthly random walk of vacancy rate
+  min_notice_days: { CRIMINAL: 14, NON_CRIMINAL: 21, CUSTODY: 5 }
+
+absence:
+  short_rate_per_year: 3.0
+  short_days_mean: 3
+  long_prob_per_year: 0.06
+  long_days_min: 60
+  long_days_max: 240
+  reassign_if_remaining_days: 30
+  familiarisation_days: 14
+
+effects:
+  registration: { base_days_efiling: 1.0, base_days_paper: 6.0, load_coef: 1.20, noise_sdlog: 0.40 }
+  service: { days_efiling: 2, days_paper: 12, unreachable_prob: 0.12, unreachable_counsel_mult: 0.3, retry_days: 30, max_retries: 3, electronic_act_extension_days: 10 }
+  response: { extension_prob: 0.18, extension_days: 14 }
+  preparation: { noise_sdlog: 0.45, trend_per_year: 0.06, disclosure_late_prob: 0.15, disclosure_late_days: 40 }
+  motion: { intercept: -3.0, complexity_coef: 0.8, counsel_coef: 0.9, bulk_coef: -1.0, decision_days: 35, appeal_prob: 0.35, appeal_stay_days: 150 }
+  expert: { days_mean: 90, sdlog: 0.45, late_prob: 0.30, late_days_mean: 35 }
+  first_appearance: { early_plea_share: 0.80, custody_release_prob: 0.45 }
+  adjournment:
+    intercept: -1.90
+    log_complexity: 0.50
+    interpreter: 0.80
+    self_represented: 0.55
+    counsel_load: 0.25         # per other hearing of the same counsel within +-3 days
+    custody: -0.60
+    video_room: -0.45
+    extra_defendant: 0.30
+    prior_adjournments: 0.35
+    prep_hearing: -0.30
+  deliberation: { backlog_coef: 0.035, experience_coef: -0.12, complexity_exp: 0.8, noise_sdlog: 0.35, trend_per_year: 0.06 }
+  settlement_window_share: 0.85

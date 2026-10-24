@@ -1,0 +1,72 @@
+# Code tables loaded into reference tables. Weights/extra days are TRUE simulation parameters.
+attribution:
+  DEFENCE:     "Defence / accused side"
+  PROSECUTION: "Prosecution"
+  CLAIMANT:    "Claimant / applicant side"
+  RESPONDENT:  "Respondent side"
+  COURT:       "Court / institutional"
+  THIRD_PARTY: "Third party (expert, interpreter, authority)"
+  JOINT:       "Joint request of parties"
+
+# applies: CRIMINAL | NON_CRIMINAL | BOTH; driver: covariate that multiplies the weight
+# DEFENCE attribution is recorded as RESPONDENT in non-criminal cases.
+adjournment_reasons:
+  COUNSEL_CONFLICT:     { label: "Counsel unavailable (scheduling conflict)", attribution: DEFENCE,     applies: BOTH,         weight: 3.0, driver: counsel_load, extra_days: 30 }
+  NEW_COUNSEL:          { label: "Change of counsel",                         attribution: DEFENCE,     applies: BOTH,         weight: 1.0, driver: none,         extra_days: 45 }
+  PARTY_ABSENT:         { label: "Party failed to appear / ill",              attribution: DEFENCE,     applies: BOTH,         weight: 2.0, driver: self_rep,     extra_days: 35 }
+  DISCLOSURE_PENDING:   { label: "Disclosure incomplete",                     attribution: PROSECUTION, applies: CRIMINAL,     weight: 2.0, driver: complexity,   extra_days: 40 }
+  WITNESS_ABSENT:       { label: "Prosecution witness absent",                attribution: PROSECUTION, applies: CRIMINAL,     weight: 1.5, driver: none,         extra_days: 30 }
+  EVIDENCE_SUPPLEMENT:  { label: "Claimant requests to supplement evidence",  attribution: CLAIMANT,    applies: NON_CRIMINAL, weight: 1.5, driver: complexity,   extra_days: 40 }
+  INTERPRETER_UNAVAIL:  { label: "Interpreter unavailable",                   attribution: THIRD_PARTY, applies: BOTH,         weight: 0.0, driver: interpreter,  extra_days: 21 }
+  EXPERT_PENDING:       { label: "Expert report pending",                     attribution: THIRD_PARTY, applies: BOTH,         weight: 0.0, driver: expert,       extra_days: 45 }
+  JUDGE_UNAVAIL:        { label: "Judge unavailable",                         attribution: COURT,       applies: BOTH,         weight: 0.8, driver: none,         extra_days: 7 }
+  COURTROOM_OVERBOOKED: { label: "Courtroom / list overbooked",               attribution: COURT,       applies: BOTH,         weight: 0.8, driver: none,         extra_days: 7 }
+  SETTLEMENT_TALKS:     { label: "Parties negotiating settlement",            attribution: JOINT,       applies: NON_CRIMINAL, weight: 1.2, driver: none,         extra_days: 30 }
+
+dispositions:
+  JUDGMENT:         "Judgment after main hearing"
+  WRITTEN_DECISION: "Decision on written procedure"
+  DEFAULT_JUDGMENT: "Default judgment (no response)"
+  SETTLED:          "Settlement confirmed"
+  WITHDRAWN:        "Withdrawn / charges dropped"
+  GUILTY_PLEA:      "Guilty plea / admission at first appearance"
+
+statuses:
+  FILED:                 { phase: INTAKE,       label: "Filed, awaiting registration" }
+  AWAITING_FIRST_APPEAR: { phase: INTAKE,       label: "Awaiting first appearance (queue time)" }
+  SERVICE:               { phase: SERVICE,      label: "Service of process" }
+  AWAITING_RESPONSE:     { phase: SERVICE,      label: "Response period running" }
+  PREPARATION:           { phase: PREPARATION,  label: "Preparation / disclosure" }
+  MOTION_PENDING:        { phase: PREPARATION,  label: "Procedural motion pending" }
+  STAYED_APPEAL:         { phase: PREPARATION,  label: "Stayed - interlocutory appeal" }
+  AWAITING_EXPERT:       { phase: PREPARATION,  label: "Awaiting expert report" }
+  AWAITING_HEARING:      { phase: HEARING,      label: "Awaiting hearing" }
+  DELIBERATION:          { phase: DECISION,     label: "Judgment being drafted" }
+  DISPOSED:              { phase: CLOSED,       label: "Disposed" }
+
+events:
+  CASE_FILED:            "Initiating document filed"
+  CASE_REGISTERED:       "Case registered and numbered"
+  JUDGE_ASSIGNED:        "Judge assigned"
+  JUDGE_REASSIGNED:      "Judge reassigned"
+  FIRST_APPEARANCE:      "First appearance held"
+  CUSTODY_RELEASED:      "Released from pretrial custody"
+  SERVICE_ISSUED:        "Summons issued"
+  SERVICE_FAILED:        "Service attempt failed"
+  SERVED:                "Respondent served"
+  RESPONSE_FILED:        "Response filed"
+  RESPONSE_EXTENDED:     "Response deadline extended"
+  NO_RESPONSE:           "No response within deadline"
+  DISCLOSURE_LATE:       "Prosecution disclosure delayed"
+  MOTION_FILED:          "Procedural motion filed"
+  MOTION_DECIDED:        "Procedural motion decided"
+  APPEAL_FILED:          "Interlocutory appeal filed"
+  APPEAL_DECIDED:        "Interlocutory appeal decided"
+  EXPERT_ORDERED:        "Expert / report ordered"
+  EXPERT_REPORT_FILED:   "Expert report filed"
+  HEARING_SCHEDULED:     "Hearing scheduled"
+  HEARING_HELD:          "Hearing held"
+  HEARING_ADJOURNED:     "Hearing adjourned"
+  HEARING_VACATED:       "Hearing vacated (case resolved)"
+  DELIBERATION_STARTED:  "Matter reserved for decision"
+  CASE_DISPOSED:         "Case disposed"
