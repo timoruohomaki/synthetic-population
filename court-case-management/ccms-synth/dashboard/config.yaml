@@ -1,0 +1,29 @@
+# Dashboard configuration (illustrative values - adjust to your jurisdiction's standards)
+title: "CCMS caseflow dashboard (synthetic data)"
+
+# Case processing time standards in days, per case type (NCSC Model Reports 25 and 27:
+# "cases pending longer than your jurisdiction's time standard").
+time_standards:
+  CIV_SUM: 90
+  CIV_SMALL: 180
+  CIV_DIS: 365
+  FAM: 270
+  CRIM_WR: 90
+  CRIM_MH: 180
+  CRIM_MINOR: 120
+
+# Age buckets for pending cases and cases at disposition (Model Reports 20-22), upper bounds in days.
+age_breaks: [90, 180, 365, 730]
+
+# Months used to fit the pending-caseload projection (Model Report 19) and months projected ahead.
+projection:
+  fit_months: 12
+  horizon_months: 12
+  interval_level: 0.8
+
+# Reference palette (validated categorical order; status colours are reserved).
+palette:
+  categorical: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
+  status: { good: "#0ca30c", warning: "#fab219", serious: "#ec835a", critical: "#d03b3b" }
+  ink: { primary: "#0b0b0b", secondary: "#52514e", muted: "#898781", grid: "#e1e0d9", axis: "#c3c2b7" }
+  surface: "#fcfcfb"

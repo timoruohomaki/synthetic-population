@@ -83,7 +83,12 @@ sql/postgres/   same model in PostgreSQL types (date, timestamptz, boolean, nume
 analysis/       example models that check recovery of the true effects
 tests/          testthat: unit tests + end-to-end invariants (FK, ordering, capacity, censoring)
 docs/           data_dictionary.md, simulation_model.md, er_diagram.mmd (Mermaid)
+dashboard/      Shiny dashboard mockup (KPI functions, modules, config, tests)
 ```
+
+## Dashboard (Shiny mockup)
+
+`dashboard/` holds an interactive caseflow dashboard over the generated database. Its reports follow the NCSC *Court Case Management Information Systems Manual* model reports: caseload inventory, clearance, age of pending cases, exception reports, caseload per judge, and projection. It adds delay attribution, phase decomposition and hearing/adjournment views. Run it with `shiny::runApp("dashboard")`; see `dashboard/README.md`.
 
 ## Using it for a delay model
 
