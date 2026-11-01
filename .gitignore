@@ -60,3 +60,9 @@ court-case-management/**/*.sqlite-journal
 
 # The repo-wide "docs/" rule above targets pkgdown sites; keep ccms-synth documentation
 !court-case-management/ccms-synth/docs/
+
+# population: source data (downloaded open data, ~500 MB), the address cache
+# and generated people are never committed. See population/data/README.md.
+population/data/*
+!population/data/README.md
+population/output/

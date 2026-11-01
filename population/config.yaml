@@ -1,0 +1,55 @@
+# Synthetic population generator - configuration
+# Every value can be overridden from the command line or from R, see README.md.
+
+run:
+  n_persons: 10000            # 1000000+ works; reading the address file takes most of the time
+  seed: 20261101              # same seed + same source files = same population
+  reference_date: "2026-01-01"  # ISO 8601; ages are computed on this date
+  output_dir: "output"
+  formats: ["csv", "rds"]     # "parquet" is also accepted when the arrow package is installed
+
+# Source files in data/. Patterns are matched with Sys.glob(); the newest match wins.
+sources:
+  first_names: "etunimitilasto-*.xlsx"
+  last_names: "sukunimitilasto-*.xlsx"
+  addresses: "Suomi_osoitteet_*.OPT"
+  postcodes: "PCF_*.dat"
+  municipalities: "kunta_1_*.csv"
+  cache_addresses: true       # cleaned address table is cached in data/cache/
+
+people:
+  share_female: 0.505
+  # Age bands with weights. Default weights are the population of Finland on
+  # 2024-12-31 (Statistics Finland): 0-14, 15-64, 65-74, 75+.
+  age_bands:
+    - { from: 0,  to: 14, weight: 820287 }
+    - { from: 15, to: 64, weight: 3486867 }
+    - { from: 65, to: 74, weight: 675986 }
+    - { from: 75, to: 99, weight: 652831 }
+  # Probability of having 1, 2 or 3 given names
+  given_name_counts: [0.15, 0.60, 0.25]
+
+hetu:
+  # test_series  : individual number 900-999 (official convention for test data),
+  #                real birth date, passes full validation incl. the date.
+  # month_offset : the blog's method, month 13-24 in the code (real month + 12),
+  #                individual number 002-899. Never matches a real person, but
+  #                date checks reject it.
+  mode: "test_series"
+  # Share of codes using the century markers added in 2023 (Y/X/W/V/U for the
+  # 1900s, B/C/D/E/F for the 2000s) instead of "-" and "A".
+  new_century_marker_share: 0.0
+
+iban:
+  # Leading digit(s) of the 14-digit Finnish BBAN. No Finnish bank uses "9"
+  # (Finance Finland list 16.3.2026), so the numbers pass the Luhn and IBAN
+  # checks but cannot be real accounts.
+  bank_code: "9"
+
+contact:
+  email_domains: ["example.com", "example.org", "example.net"]  # reserved by RFC 2606
+  phone_prefixes:   # Finnish mobile prefixes with weights. Not collision-free!
+    "040": 0.30
+    "044": 0.20
+    "045": 0.15
+    "050": 0.35
