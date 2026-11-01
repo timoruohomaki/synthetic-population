@@ -2,8 +2,8 @@
 
 Generates realistic but fictional people - names, birth dates, addresses,
 personal identity codes (henkilötunnus), bank accounts, e-mail addresses and
-phone numbers - by combining Finnish open data at random. A million persons
-take about a minute.
+phone numbers - by combining Finnish open data at random. Optionally it also
+creates companies run by those people. A million persons take about a minute.
 
 The project has two goals:
 
@@ -22,14 +22,17 @@ The project has two goals:
 
 ```r
 source("generate_population.R")
-pop <- generate_population(n = 10000)                 # writes output/ files too
-pop <- generate_population(n = 1e6, hetu_mode = "month_offset")
+res <- generate_population(n = 10000)                 # writes output/ files too
+res <- generate_population(n = 1e6, hetu_mode = "month_offset")
+res <- generate_population(n = 1e5, companies = TRUE)  # persons + companies
+View(res$persons); View(res$companies)
 ```
 
 Or from a terminal in this folder:
 
 ```sh
 Rscript generate_population.R --n 1000000 --seed 42 --hetu-mode month_offset
+Rscript generate_population.R --n 100000 --companies true
 ```
 
 To learn step by step, open [walkthrough.R](walkthrough.R) and run it one line at a time.
@@ -46,6 +49,9 @@ All settings are in [config.yaml](config.yaml).
 | IBAN | Bank code `9`, valid Luhn and IBAN check digits | No - no Finnish bank uses code 9 |
 | E-mail | `first.last@example.com/.org/.net` | No - domains reserved by RFC 2606 |
 | Phone | Random mobile number (040, 044, 045, 050) | **Yes** - Finland has no fictional number range. Never call or text them. |
+| Business ID (Y-tunnus) | Starts with `9`, valid check digit | Very unlikely - IDs in use start with 0-3 (2026), but no range is officially reserved |
+| Company name | Latin words, or the owner's name | Possible, especially sole traders named after the person |
+| Company web and e-mail | `www.<name>.example`, `info@<name>.example` | No - `.example` is reserved by RFC 2606 |
 
 `month_offset` is the method of the original
 [LinkedIn article](https://www.linkedin.com/pulse/introduction-r-creating-large-synthetic-data-sets-ehr-timo-ruohom%C3%A4ki-ngqjf/):
@@ -63,8 +69,40 @@ Add `"parquet"` to `run.formats` when the arrow package is installed.
 
 Columns: `person_id, hetu, first_name, given_names, last_name, sex, birth_date,
 age, street_address, postal_code, post_office, municipality_code, municipality,
-region_code, region, email, phone, iban`. Every run is validated (16 checks)
-before anything is written. The same seed and source files always give the same people.
+region_code, region, email, phone, iban, business_id`. `business_id` is filled
+only for sole traders when companies are generated. Every run is validated
+(16 checks) before anything is written. The same seed and source files always
+give the same people.
+
+## Companies (optional)
+
+Turn on with `companies.enabled: true` in config.yaml, `companies = TRUE` in R
+or `--companies true`. It runs last, after the persons are ready:
+
+- `per_1000_persons` companies (default 50 per 1000 persons) in the forms
+  osakeyhtiö, toiminimi, kommandiittiyhtiö, avoin yhtiö and osuuskunta.
+- Each company has one **contact person** from the population, aged 18-74,
+  and nobody runs two companies: the managing director (toimitusjohtaja) of
+  an Oy or osuuskunta, the responsible partner of a Ky or Ay, or the sole
+  trader (elinkeinonharjoittaja) of a toiminimi.
+- The company's address is in the **same postal code area and municipality
+  as the contact person's home**, so its home municipality (kotipaikka) is
+  where the contact lives. Most sole traders (70 %) work from home.
+- Like the YTJ register: Business ID and VAT number, name, company form,
+  registration date (older companies have smaller IDs), main line of business
+  (TOL 2008 section), address, web site and e-mail, and the trade,
+  prepayment, VAT and employer registers.
+- Sole traders' Business IDs are also written to their person row.
+
+Output: `output/companies_<n>_<date>.csv/.rds`, linked to the persons by
+`contact_person_id` = `person_id`. 15 more checks run before saving.
+
+Names are built from the Latin word list in `data/latin_words*.csv` (or the
+copy in `extras/company-names/`); `companies.excluded_words` keeps unfortunate
+words such as *scelus* (crime) out. The company form shares, register
+probabilities and the equal weights of the business lines in
+`reference/tol2008_sections.csv` are illustrative defaults, not statistics:
+replace them with figures from Statistics Finland's enterprise statistics.
 
 ## Learning path
 
@@ -81,7 +119,11 @@ before anything is written. The same seed and source files always give the same 
 | `R/08_contact.R` | E-mail, phone | text cleaning, regular expressions, uniqueness |
 | `R/09_validate.R` | Checks | `anyNA()`, `anyDuplicated()`, reporting all failures |
 | `R/10_output.R` | Saving | `write_excel_csv2()`, `saveRDS()`, optional packages |
-| `R/11_pipeline.R` | Everything | composing functions, `set.seed()`, `mutate()` |
+| `R/12_business_id.R` | Business IDs | weighted sums with `%*%`, redrawing invalid values |
+| `R/13_company_names.R` | Company names | cleaning a word list, string building, uniqueness |
+| `R/14_companies.R` | Companies | sampling without replacement, a random row per group, lookup tables |
+| `R/15_validate_companies.R` | Checks across tables | `match()`, `%in%`, relations between tables |
+| `R/16_pipeline.R` | Everything | composing functions, `set.seed()`, `mutate()`, optional steps |
 
 ## Exercises
 
@@ -94,7 +136,9 @@ before anything is written. The same seed and source files always give the same 
   so a 5-year-old can be called Timo. How would you make names depend on
   birth year?
 - **Age pyramid** with ggplot2; **counts per region** with `count()` and a map.
-- **Databases**: write the table to SQLite (`DBI` + `RSQLite`) or PostgreSQL
+- **Realistic companies**: weight the business lines and company forms with
+  Statistics Finland's enterprise counts; give an Oy several board members.
+- **Databases**: write the tables to SQLite (`DBI` + `RSQLite`) or PostgreSQL
   and query it with SQL.
 
 ## Tests
@@ -104,6 +148,7 @@ the pipeline on small in-memory tables, and the file readers when `data/` has th
 
 ## Other folders
 
-- `extras/company-names/`: an older experiment that generates company names
-  from Latin words; not part of the pipeline.
+- `extras/company-names/`: `extract_latin_words.R` rebuilds the Latin word
+  list from a public dictionary page (needs the rvest package), and a copy of
+  the list itself.
 - `reference/`: small lookup tables that ship with the repository.

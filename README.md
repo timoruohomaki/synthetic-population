@@ -4,7 +4,7 @@ Creating models to generate test data with the characteristics of live populatio
 ## Subprojects
 
 - [`population`](population/README.md): synthetic Finnish persons (names, addresses, henkilötunnus,
-  IBAN, e-mail, phone) combined at random from open data, with checksums that validate. Scales to
+  IBAN, e-mail, phone) and optionally companies with Business IDs and contact persons, combined at random from open data, with checksums that validate. Scales to
   millions of rows and doubles as a step-by-step R/RStudio learning project. Source data and output
   are not committed; see [`population/data/README.md`](population/data/README.md).
 - [`court-case-management/ccms-synth`](court-case-management/ccms-synth/README.md): synthetic court case

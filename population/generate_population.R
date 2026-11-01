@@ -2,11 +2,13 @@
 #
 # In RStudio: open synthetic-population.Rproj, then
 #   source("generate_population.R")
-#   pop <- generate_population(n = 10000)           # also writes output/ files
-#   pop <- generate_population(n = 1000, write = FALSE)
+#   res <- generate_population(n = 10000)           # also writes output/ files
+#   res <- generate_population(n = 1000, companies = TRUE, write = FALSE)
+#   View(res$persons); View(res$companies)
 #
 # From a terminal (in the population folder):
 #   Rscript generate_population.R --n 1000000 --seed 42 --hetu-mode month_offset
+#   Rscript generate_population.R --n 100000 --companies true
 #
 # Settings live in config.yaml; source files go to data/ (see data/README.md).
 
@@ -30,21 +32,25 @@ local({
 
 #' Read "--name value" pairs from the command line into a named list.
 parse_cli <- function(args) {
-  known <- c("--n" = "n", "--seed" = "seed", "--hetu-mode" = "hetu_mode")
+  known <- c("--n" = "n", "--seed" = "seed", "--hetu-mode" = "hetu_mode", "--companies" = "companies")
   out <- list()
   i <- 1
   while (i <= length(args)) {
     key <- args[i]
     if (key %in% c("-h", "--help")) {
-      cat("Usage: Rscript generate_population.R [--n N] [--seed S] [--hetu-mode test_series|month_offset]\n")
+      cat("Usage: Rscript generate_population.R [--n N] [--seed S]",
+          "[--hetu-mode test_series|month_offset] [--companies true|false]\n")
       quit(status = 0)
     }
     if (!key %in% names(known) || i == length(args)) abort("Unknown or incomplete argument: ", key)
     value <- args[i + 1]
-    out[[known[[key]]]] <- if (key == "--hetu-mode") value else as.numeric(value)
+    out[[known[[key]]]] <- switch(key,
+      "--hetu-mode" = value,
+      "--companies" = if (tolower(value) %in% c("true", "false")) tolower(value) == "true" else NA,
+      as.numeric(value))
     i <- i + 2
   }
-  if (anyNA(unlist(out))) abort("--n and --seed must be numbers")
+  if (anyNA(unlist(out))) abort("--n and --seed must be numbers, --companies true or false")
   out
 }
 
