@@ -54,7 +54,7 @@ This library provides a comprehensive solution for pseudonymizing personal data 
 install.packages(c("openssl", "digest", "uuid", "R6"))
 
 # Source the pseudonymizer file
-source("pseudonymize.R")
+source("pseudo.R")
 ```
 
 ## Usage
@@ -63,7 +63,7 @@ source("pseudonymize.R")
 
 ```r
 # Load the pseudonymizer function
-source("pseudonymize.R")
+source("pseudo.R")
 
 # Create a pseudonymizer instance
 pseudonymizer <- create_pseudonymizer(store_mappings = TRUE)
@@ -99,7 +99,7 @@ print(pseudonymized_df)
 
 ```r
 # Load the pseudonymizer
-source("pseudonymize.R")
+source("pseudo.R")
 pseudonymizer <- create_pseudonymizer(store_mappings = TRUE)
 
 # Example dataset with sensitive information including SSID

@@ -1,0 +1,20 @@
+region_code;region_fi;region_sv
+01;Uusimaa;Nyland
+02;Varsinais-Suomi;Egentliga Finland
+03;Satakunta;Satakunta
+04;Kanta-Häme;Egentliga Tavastland
+05;Pirkanmaa;Birkaland
+06;Päijät-Häme;Päijänne-Tavastland
+07;Kymenlaakso;Kymmenedalen
+08;Etelä-Karjala;Södra Karelen
+09;Etelä-Savo;Södra Savolax
+10;Pohjois-Savo;Norra Savolax
+11;Pohjois-Karjala;Norra Karelen
+12;Keski-Suomi;Mellersta Finland
+13;Etelä-Pohjanmaa;Södra Österbotten
+14;Pohjanmaa;Österbotten
+15;Keski-Pohjanmaa;Mellersta Österbotten
+16;Pohjois-Pohjanmaa;Norra Österbotten
+17;Kainuu;Kajanaland
+18;Lappi;Lappland
+19;Ahvenanmaa;Åland
