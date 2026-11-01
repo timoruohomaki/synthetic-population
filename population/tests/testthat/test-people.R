@@ -1,15 +1,3 @@
-fake_names <- function(prefix) tibble::tibble(name = paste0(prefix, 1:200), count = 200:1)
-
-fake_inputs <- function() {
-  names_list <- list(first_female = fake_names("Fa"), first_male = fake_names("Ma"),
-                     other_female = fake_names("Fb"), other_male = fake_names("Mb"),
-                     last = fake_names("L"))
-  addresses <- tibble::tibble(street_address = paste("Testikatu", 1:50), postal_code = "00100",
-                              post_office = "HELSINKI", municipality_code = "091",
-                              municipality = "Helsinki", region_code = "01", region = "Uusimaa")
-  list(names = names_list, addresses = addresses)
-}
-
 test_that("birth dates stay inside the age bands", {
   set.seed(1)
   ref <- as.Date("2026-01-01")
@@ -27,7 +15,8 @@ test_that("the whole pipeline works on small in-memory inputs", {
     dplyr::mutate(hetu = make_hetu(birth_date, sex),
                   iban = make_iban(dplyr::n(), cfg$iban$bank_code),
                   email = make_email(first_name, last_name, cfg$contact$email_domains),
-                  phone = make_phone(dplyr::n(), cfg$contact$phone_prefixes)) |>
+                  phone = make_phone(dplyr::n(), cfg$contact$phone_prefixes),
+                  business_id = NA_character_) |>
     dplyr::select(dplyr::all_of(POPULATION_COLUMNS))
   expect_equal(nrow(pop), 2000)
   expect_silent(validate_population(pop, cfg) |> suppressMessages())

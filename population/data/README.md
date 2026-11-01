@@ -13,9 +13,11 @@ When several versions are present, the newest file wins.
 | Building addresses | `Suomi_osoitteet_*.OPT` | DVV: *Rakennusten osoitetiedot ja äänestysaluetiedot - koko Suomi* on avoindata.fi, also mirrored at [nic.funet.fi/index/geodata/dvv/osoitteet](https://nic.funet.fi/index/geodata/dvv/osoitteet/). Unzip the `.OPT` file here. The record description PDF is useful to keep alongside (`DVV-kuvaus.pdf`). |
 | Postcodes | `PCF_*.dat` | Posti: [Postinumeroaineistot](https://www.posti.fi/webpcode/), file *PCF*. Free of charge; read and follow Posti's terms of use. Record description: `PCF_Description_Finnish.pdf` from the same page. |
 | Municipalities | `kunta_1_*.csv` | Statistics Finland: [Kunnat 2026](https://stat.fi/fi/luokitukset/kunta/kunta_1_20260101), "Lataa" → CSV |
+| Latin words (companies only) | `latin_words*.csv` | Optional here: the repository has a copy in `../extras/company-names/`, which is used when this folder has none. Rebuild with `extract_latin_words.R`. |
 
 `../reference/regions_dvv.csv` (region codes 01-19 as used in the DVV address
-file) is small and ships with the repository.
+file) and `../reference/tol2008_sections.csv` (main lines of business, TOL 2008
+sections) are small and ship with the repository.
 
 ## Formats in short
 

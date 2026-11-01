@@ -35,6 +35,7 @@ people$iban <- make_iban(nrow(people), cfg$iban$bank_code)
 iban_format(head(people$iban))
 people$email <- make_email(people$first_name, people$last_name, cfg$contact$email_domains)
 people$phone <- make_phone(nrow(people), cfg$contact$phone_prefixes)
+people$business_id <- NA_character_      # filled for sole traders in step 6
 
 # 5. Check and look -----------------------------------------------------------
 pop <- dplyr::select(people, dplyr::all_of(POPULATION_COLUMNS))
@@ -49,6 +50,17 @@ pop |> dplyr::group_by(region) |>
 pop |> dplyr::filter(age < 18) |> dplyr::count(municipality, sort = TRUE)
 pop |> dplyr::mutate(decade = 10 * (as.integer(format(birth_date, "%Y")) %/% 10)) |>
   dplyr::count(decade)
+
+# 6. Companies (optional last step) ------------------------------------------
+cfg$companies$enabled <- TRUE
+companies <- draw_companies(cfg, pop, addresses)
+pop <- add_business_ids(pop, companies)
+validate_companies(companies, pop, cfg)
+dplyr::count(companies, company_form, sort = TRUE)
+# The contact person of each company, joined from the persons table:
+companies |>
+  dplyr::left_join(pop, by = c("contact_person_id" = "person_id"), suffix = c("", "_home")) |>
+  dplyr::select(company_name, contact_role, first_name, last_name, postal_code, postal_code_home)
 
 # Exercises (ideas in README.md):
 #   a) Uusimaa is under-represented because addresses are drawn uniformly over

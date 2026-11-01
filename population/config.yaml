@@ -15,6 +15,7 @@ sources:
   addresses: "Suomi_osoitteet_*.OPT"
   postcodes: "PCF_*.dat"
   municipalities: "kunta_1_*.csv"
+  company_words: "latin_words*.csv"   # data/ first, then extras/company-names/
   cache_addresses: true       # cleaned address table is cached in data/cache/
 
 people:
@@ -53,3 +54,32 @@ contact:
     "044": 0.20
     "045": 0.15
     "050": 0.35
+
+companies:
+  # Optional last step: companies whose contact person (managing director,
+  # partner or sole trader) is one of the generated persons. Sole traders
+  # also get the Business ID on their person row.
+  enabled: false
+  per_1000_persons: 50          # number of companies relative to persons
+  contact_age: [18, 74]         # contact person's age on run.reference_date
+  first_registration: "1990-01-01"
+  # Business IDs in use start with 0-3 (2026); 9 is far beyond that range.
+  business_id_first_digit: "9"
+  domain_suffix: ".example"     # web and e-mail domains, reserved by RFC 2606
+  sole_trader_home_share: 0.7   # sole traders working from home
+  # Latin words never used in names (the list is a plain dictionary; add more)
+  excluded_words: ["scelus", "vomica", "mors", "morbus", "cadaver", "venenum",
+                   "sanguis", "furtum", "fraus", "latro", "pestis", "lues", "stercus",
+                   "pudendus", "pudendum", "meretrix", "lupanar", "nefas", "scortum"]
+  # The weights below are illustrative defaults, not statistics: adjust them.
+  forms:
+    tmi: 0.45                   # toiminimi (sole trader)
+    oy: 0.45                    # osakeyhtiö
+    ky: 0.05                    # kommandiittiyhtiö
+    ay: 0.03                    # avoin yhtiö
+    osk: 0.02                   # osuuskunta
+  registers:                    # probability of being in each register
+    trade_register_tmi: 0.5     # mandatory for the other forms
+    prepayment: 0.9
+    vat: 0.7
+    employer: 0.25
