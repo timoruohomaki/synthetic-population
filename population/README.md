@@ -124,6 +124,20 @@ replace them with figures from Statistics Finland's enterprise statistics.
 | `R/14_companies.R` | Companies | sampling without replacement, a random row per group, lookup tables |
 | `R/15_validate_companies.R` | Checks across tables | `match()`, `%in%`, relations between tables |
 | `R/16_pipeline.R` | Everything | composing functions, `set.seed()`, `mutate()`, optional steps |
+| `R/17_hobbies.R` | Enriching (lesson) | weighted `sample()`, Zipf weights, one-to-many long tables |
+
+## Lessons
+
+Optional lessons in `lessons/` build on a generated population (the newest
+`output/population_*.rds`, or a fresh 100.000 persons) and are run line by line:
+
+- [`lessons/enrich_hobbies.R`](lessons/enrich_hobbies.R) - give each person
+  0-3 hobbies from `data/hobbies.xlsx`. Shows that `sample(..., prob = )`
+  handles a million weighted draws in milliseconds, how the cumulative-weights
+  method behind it works, what to do when the list has no popularity figures
+  (Zipf's law as a written-down assumption; settings under `hobbies:` in
+  config.yaml), and why several values per person belong in a long table
+  (`person_id`, `hobby`) rather than a text column.
 
 ## Exercises
 
