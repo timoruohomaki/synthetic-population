@@ -22,7 +22,12 @@ local({
   # The folder of this script: from source(), from Rscript's --file=, or the
   # working directory as a last resort.
   file_arg <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE))
-  ofile <- tryCatch(sys.frame(1)$ofile, error = function(e) NULL)
+  # The innermost source() call is this file, also when another script sources it.
+  ofile <- NULL
+  for (i in rev(seq_len(sys.nframe()))) {
+    ofile <- tryCatch(get0("ofile", envir = sys.frame(i), inherits = FALSE), error = function(e) NULL)
+    if (is.character(ofile)) break
+  }
   here <- if (!is.null(ofile)) dirname(ofile) else if (length(file_arg) == 1) dirname(file_arg) else "."
   steps <- sort(list.files(file.path(here, "R"), pattern = "^[0-9]{2}_.*\\.R$", full.names = TRUE))
   if (length(steps) == 0) stop("No R/ step files next to generate_population.R", call. = FALSE)

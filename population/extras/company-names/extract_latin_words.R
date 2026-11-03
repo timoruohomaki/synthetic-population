@@ -1,10 +1,11 @@
 # Build the Latin word list used for company names (R/13_company_names.R) ---
 #
 # Downloads a public Latin-English word list and saves one Latin entry per row
-# to latin_words.csv. The repository already contains the result, so you only
-# need this to rebuild or extend the list.
+# to latin_words.csv. The repository already contains the result in
+# reference/latin_words.csv, so you only need this to rebuild or extend it.
+# Save your own version to data/ to use it instead of the shared one.
 #
-#   Rscript extras/company-names/extract_latin_words.R [output.csv]
+#   Rscript extras/company-names/extract_latin_words.R data/latin_words.csv
 #
 # What you'll learn:
 #   - reading a web page with rvest (read_html, html_text2)

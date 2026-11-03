@@ -14,7 +14,6 @@ company_fixture <- function(n_persons = 3000, per_1000 = 100) {
 }
 
 test_that("companies are valid and linked to their contact persons", {
-  skip_if(length(Sys.glob(file.path(root, "extras", "company-names", "latin_words*.csv"))) == 0)
   f <- company_fixture()
   firms <- draw_companies(f$cfg, f$pop, f$addresses)
   pop <- add_business_ids(f$pop, firms)
@@ -26,7 +25,6 @@ test_that("companies are valid and linked to their contact persons", {
 })
 
 test_that("a company in another area than its contact fails validation", {
-  skip_if(length(Sys.glob(file.path(root, "extras", "company-names", "latin_words*.csv"))) == 0)
   f <- company_fixture()
   firms <- draw_companies(f$cfg, f$pop, f$addresses)
   pop <- add_business_ids(f$pop, firms)
