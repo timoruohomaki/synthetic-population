@@ -15,7 +15,7 @@ test_that("e-mail addresses are unique and use the given domains", {
 
 test_that("phone numbers are unique and use the prefixes", {
   set.seed(1)
-  p <- make_phone(5000, list("040" = 0.5, "050" = 0.5))
+  p <- make_phone(5000, list("047" = 0.5, "048" = 0.5))
   expect_false(anyDuplicated(p) > 0)
-  expect_true(all(grepl("^0[45]0 [0-9]{7}$", p)))
+  expect_true(all(grepl("^04[78] [0-9]{7}$", p)))
 })
