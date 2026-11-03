@@ -49,11 +49,13 @@ iban:
 
 contact:
   email_domains: ["example.com", "example.org", "example.net"]  # reserved by RFC 2606
-  phone_prefixes:   # Finnish mobile prefixes with weights. Not collision-free!
-    "040": 0.30
-    "044": 0.20
-    "045": 0.15
-    "050": 0.35
+  # Mobile area codes with weights. 047 and 048 are in Traficom's number
+  # reserve (regulation 32 U/2023, annex 1) and not granted to any operator,
+  # so no real subscriber has these numbers - until Traficom grants them.
+  # Do not use 049: it is for machine-to-machine numbers and partly granted.
+  phone_prefixes:
+    "047": 0.5
+    "048": 0.5
 
 companies:
   # Optional last step: companies whose contact person (managing director,

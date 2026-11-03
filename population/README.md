@@ -48,7 +48,7 @@ All settings are in [config.yaml](config.yaml).
 | Henkilötunnus, `month_offset` | Month + 12 (months 13-24), number 002-899 | No - no real month is above 12 |
 | IBAN | Bank code `9`, valid Luhn and IBAN check digits | No - no Finnish bank uses code 9 |
 | E-mail | `first.last@example.com/.org/.net` | No - domains reserved by RFC 2606 |
-| Phone | Random mobile number (040, 044, 045, 050) | **Yes** - Finland has no fictional number range. Never call or text them. |
+| Phone | Mobile area codes 047 and 048 | No, for now - these codes are in [Traficom's number reserve](https://www.traficom.fi/files/media/regulation/M_32_U_2023.pdf) and not granted to any operator ([granted codes](https://eservices.traficom.fi/LicensesServices/Forms/NureMatkaviestinverkkojenSuuntanumerot.aspx?langid=fi)). Traficom can grant them later, so check the list before relying on it. |
 | Business ID (Y-tunnus) | Starts with `9`, valid check digit | Very unlikely - IDs in use start with 0-3 (2026), but no range is officially reserved |
 | Company name | Latin words, or the owner's name | Possible, especially sole traders named after the person |
 | Company web and e-mail | `www.<name>.example`, `info@<name>.example` | No - `.example` is reserved by RFC 2606 |
@@ -71,7 +71,7 @@ Columns: `person_id, hetu, first_name, given_names, last_name, sex, birth_date,
 age, street_address, postal_code, post_office, municipality_code, municipality,
 region_code, region, email, phone, iban, business_id`. `business_id` is filled
 only for sole traders when companies are generated. Every run is validated
-(16 checks) before anything is written. The same seed and source files always
+(17 checks) before anything is written. The same seed and source files always
 give the same people.
 
 ## Companies (optional)

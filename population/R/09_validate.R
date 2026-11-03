@@ -34,6 +34,8 @@ validate_population <- function(pop, cfg) {
     "email uses a reserved domain" =
       all(sub(".*@", "", pop$email) %in% unlist(cfg$contact$email_domains)),
     "phone is unique" = !anyDuplicated(pop$phone),
+    "phone uses the configured prefixes" =
+      all(sub(" .*", "", pop$phone) %in% names(unlist(cfg$contact$phone_prefixes))),
     "postal code has 5 digits" = all(grepl("^[0-9]{5}$", pop$postal_code)),
     "age is within the age bands" = all(pop$age >= 0 & pop$age <= 120)
   )

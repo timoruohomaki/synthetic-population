@@ -1,9 +1,10 @@
 # Step 8: e-mail addresses and phone numbers ---------------------------------
 #
 # E-mail addresses use the domains reserved for documentation (RFC 2606), so
-# no message can ever reach a real person. Finland has no reserved fictional
-# phone number range, so phone numbers are random and MAY belong to someone:
-# never call or text them.
+# no message can ever reach a real person. Finland has no phone number range
+# reserved for fiction, so phone numbers use the mobile area codes 047 and 048
+# that Traficom keeps in reserve (not granted to any operator). Check the
+# Traficom list now and then: reserved codes can be granted in the future.
 #
 # What you'll learn:
 #   - cleaning text: tolower(), chartr() and regular expressions with gsub()
@@ -33,7 +34,7 @@ make_email <- function(first_name, last_name, domains) {
   paste0(local, suffix, "@", domain)
 }
 
-#' Mobile numbers like "040 1234567"; prefixes are drawn by weight.
+#' Mobile numbers like "047 1234567"; prefixes are drawn by weight.
 #' Returned unique: the 7-digit part is redrawn for any duplicate.
 make_phone <- function(n, prefixes) {
   p <- unlist(prefixes)
