@@ -31,7 +31,6 @@ test_that("persons get 0-3 distinct hobbies in a long table", {
 })
 
 test_that("the hobby file is read without losing the first row", {
-  skip_if(length(Sys.glob(file.path(root, "data", "hobbies*.xlsx"))) == 0, "hobbies.xlsx not in data/")
   h <- read_hobbies(test_config()) |> suppressMessages()
   expect_true(nrow(h) >= 10)
   expect_false(anyDuplicated(h$hobby) > 0)

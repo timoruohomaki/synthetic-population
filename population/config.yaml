@@ -15,7 +15,7 @@ sources:
   addresses: "Suomi_osoitteet_*.OPT"
   postcodes: "PCF_*.dat"
   municipalities: "kunta_1_*.csv"
-  company_words: "latin_words*.csv"   # data/ first, then extras/company-names/
+  company_words: "latin_words*.csv"   # data/ first, then reference/
   cache_addresses: true       # cleaned address table is cached in data/cache/
 
 people:
@@ -86,6 +86,6 @@ companies:
 
 hobbies:
   # Used by the optional lesson lessons/enrich_hobbies.R, not by the pipeline.
-  source: "hobbies*.xlsx"       # in data/; column 1 hobby, optional column 2 weight
+  source: "hobbies*.xlsx"       # data/ first, then reference/; column 1 hobby, optional column 2 weight
   count_probs: [0.20, 0.35, 0.30, 0.15]   # probability of 0, 1, 2 or 3 hobbies
   zipf_exponent: 1.0            # used only when the file has no weight column

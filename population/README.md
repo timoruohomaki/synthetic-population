@@ -98,7 +98,7 @@ Output: `output/companies_<n>_<date>.csv/.rds`, linked to the persons by
 `contact_person_id` = `person_id`. 15 more checks run before saving.
 
 Names are built from the Latin word list in `data/latin_words*.csv` (or the
-copy in `extras/company-names/`); `companies.excluded_words` keeps unfortunate
+shared copy in `reference/`); `companies.excluded_words` keeps unfortunate
 words such as *scelus* (crime) out. The company form shares, register
 probabilities and the equal weights of the business lines in
 `reference/tol2008_sections.csv` are illustrative defaults, not statistics:
@@ -132,7 +132,7 @@ Optional lessons in `lessons/` build on a generated population (the newest
 `output/population_*.rds`, or a fresh 100.000 persons) and are run line by line:
 
 - [`lessons/enrich_hobbies.R`](lessons/enrich_hobbies.R) - give each person
-  0-3 hobbies from `data/hobbies.xlsx`. Shows that `sample(..., prob = )`
+  0-3 hobbies from `reference/hobbies.xlsx`. Shows that `sample(..., prob = )`
   handles a million weighted draws in milliseconds, how the cumulative-weights
   method behind it works, what to do when the list has no popularity figures
   (Zipf's law as a written-down assumption; settings under `hobbies:` in
@@ -163,6 +163,8 @@ the pipeline on small in-memory tables, and the file readers when `data/` has th
 ## Other folders
 
 - `extras/company-names/`: `extract_latin_words.R` rebuilds the Latin word
-  list from a public dictionary page (needs the rvest package), and a copy of
-  the list itself.
-- `reference/`: small lookup tables that ship with the repository.
+  list from a public dictionary page (needs the rvest package).
+- `reference/`: datasets that ship with the repository and are meant to be
+  shared - region codes, TOL 2008 sections, the Latin word list and the hobby
+  list. A file with the same name pattern in `data/` overrides the shared one,
+  so you can try your own version without changing the repository.

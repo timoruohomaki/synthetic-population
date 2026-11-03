@@ -1,8 +1,9 @@
 # Lesson: enriching data - give every person hobbies -------------------------
 #
-# Run one line at a time in RStudio (Ctrl+Enter). You need data/hobbies.xlsx:
-# one hobby per row in the first column, optionally a popularity weight in the
-# second. The functions used here are in R/17_hobbies.R.
+# Run one line at a time in RStudio (Ctrl+Enter). The hobby list is
+# reference/hobbies.xlsx: one hobby per row in the first column, optionally a
+# popularity weight in the second. A hobbies*.xlsx in data/ overrides it.
+# The functions used here are in R/17_hobbies.R.
 #
 # Questions this lesson answers:
 #   1. Is sample() fast enough for a million people? (Yes.)
@@ -74,8 +75,8 @@ head(pop[, c("first_name", "last_name", "hobbies")])
 write_table(person_hobbies, cfg, "person_hobbies")
 
 # Exercises --------------------------------------------------------------------
-#   a) Add a second column to hobbies.xlsx with real popularity figures (for
-#      example from a leisure survey) and run the lesson again.
+#   a) Copy hobbies.xlsx to data/, add a second column with real popularity
+#      figures (for example from a leisure survey) and run the lesson again.
 #   b) Make popularity depend on age: give each age group its own weights and
 #      sample inside each group (split by age_group, or a loop over 4 groups).
 #   c) Children under 7 should not do Wine tasting: set weights to 0 for them.

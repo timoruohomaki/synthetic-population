@@ -11,13 +11,9 @@
 #   - making names unique by adding a word to the duplicates only
 
 #' Read the word list (one word or phrase per row, first column) and clean it.
-#' Looks in data/ first, then in extras/company-names/.
+#' Your own list in data/ wins; otherwise the shared one in reference/.
 read_company_words <- function(cfg) {
-  dirs <- file.path(cfg$root, c("data", file.path("extras", "company-names")))
-  hits <- unlist(lapply(dirs, function(d) Sys.glob(file.path(d, cfg$sources$company_words))))
-  if (length(hits) == 0) {
-    abort("No word list matching '", cfg$sources$company_words, "' in data/ or extras/company-names/")
-  }
+  hits <- find_shared_file(cfg, cfg$sources$company_words)
   log_info("Reading company name words: ", basename(hits[1]))
   raw <- readr::read_csv(hits[1], col_types = readr::cols(.default = "c"), progress = FALSE)
   words <- tolower(sub("[ ,(/].*", "", trimws(raw[[1]])))   # "iubeo iussi" -> "iubeo"

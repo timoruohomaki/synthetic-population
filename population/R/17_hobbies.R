@@ -10,10 +10,10 @@
 #   - one-to-many data: a long table person_id + hobby instead of a text list
 #   - removing repeats inside a group and redrawing only those rows
 
-#' Read the hobby list (first sheet). Column 1 = hobby; an optional column
+#' Read the hobby list (first sheet; data/ overrides reference/). Column 1 = hobby; an optional column
 #' 2 = weight (popularity). A file without a header row is handled too.
 read_hobbies <- function(cfg) {
-  path <- find_source_file(file.path(cfg$root, "data"), cfg$hobbies$source)
+  path <- find_shared_file(cfg, cfg$hobbies$source)   # data/ first, then reference/
   log_info("Reading hobbies: ", basename(path))
   raw <- readxl::read_excel(path, sheet = 1, col_names = FALSE, .name_repair = "minimal")
   hobby <- trimws(as.character(raw[[1]]))

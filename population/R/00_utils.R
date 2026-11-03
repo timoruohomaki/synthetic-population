@@ -84,3 +84,13 @@ rank_within <- function(key, shuffle = FALSE) {
   rank[ord] <- sequence(rle(key[ord])$lengths)
   rank
 }
+
+#' A dataset that ships with the repository: your own file in data/ wins,
+#' otherwise the shared copy in reference/ is used.
+find_shared_file <- function(cfg, pattern) {
+  for (dir in file.path(cfg$root, c("data", "reference"))) {
+    hits <- Sys.glob(file.path(dir, pattern))
+    if (length(hits) > 0) return(hits[which.max(file.info(hits)$mtime)])
+  }
+  abort("No file matching '", pattern, "' in data/ or reference/")
+}
